@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Funky Music Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background: #0d0d0d;
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .equalizer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .bar {
+      width: 10px;
+      height: 60px;
+      background: #ff4081;
+      animation: bounce 1s infinite ease-in-out;
+      transform-origin: bottom;
+      opacity: 0.6;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { height: 60px; }
+      50% { height: 120px; }
+    }
+
+    .login-box {
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 10px #ff4081;
+      text-align: center;
+      width: 300px;
+      transition: all 0.3s ease;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ff4081;
+      background: transparent;
+      color: white;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      background: rgba(255, 64, 129, 0.1);
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #e91e63;
+    }
+
+    .blast {
+      display: none;
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #ff4081, transparent);
+      animation: blast 0.8s ease-out forwards;
+      border-radius: 50%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes blast {
+      0% {
+        transform: scale(0.1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(10);
+        opacity: 0;
+      }
+    }
+
+    /* Shrink beats as fields are filled */
+    .shrink .bar { height: 40px !important; }
+    .shrink2 .bar { height: 20px !important; }
+
+  </style>
+</head>
+<body>
+
+  <div class="equalizer" id="equalizer">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <form class="login-box" id="loginForm">
+    <h2>Login Funky</h2>
+    <input type="text" placeholder="Username" id="username" required />
+    <input type="email" placeholder="Email" id="email" required />
+    <input type="password" placeholder="Password" id="password" required />
+    <button type="submit">Login</button>
+  </form>
+
+  <div class="blast" id="blast"></div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const blast = document.getElementById('blast');
+    const equalizer = document.getElementById('equalizer');
+
+    form.addEventListener('input', () => {
+      const filled = [
+        form.username.value.trim(),
+        form.email.value.trim(),
+        form.password.value.trim()
+      ].filter(Boolean).length;
+
+      // Shrink equalizer as more inputs are filled
+      equalizer.className = 'equalizer';
+      if (filled === 2) equalizer.classList.add('shrink');
+      if (filled === 3) equalizer.classList.add('shrink2');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const isValid = form.checkValidity();
+      if (isValid) {
+        blast.style.display = 'block';
+        blast.style.animation = 'none'; // reset
+        blast.offsetHeight; // trigger reflow
+        blast.style.animation = 'blast 0.8s ease-out forwards';
+        
+        // Optional: Disable form after submit
+        setTimeout(() => {
+          form.innerHTML = '<h2>Welcome! 🎉</h2>';
+        }, 800);
+      }
+    });
+  </script>
+
+</body>
+</html>
